@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max News - ትኩስ እና እውነተኛ መረጃዎች</title>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --text-color: #c5c6c7;
+            --accent-gold: #ffd700;
+            --accent-dark-gold: #b39700;
+            --border-color: #2c353d;
+            --header-bg: linear-gradient(135deg, #0b0c10, #1f2833);
+        }
+
+        .light-mode {
+            --bg-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --accent-gold: #c79800;
+            --accent-dark-gold: #8f6c00;
+            --border-color: #ddd;
+            --header-bg: linear-gradient(135deg, #fff, #e6e6e6);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 70px; }
+
+        /* Top Navigation Bar */
+        .navbar { display: flex; justify-content: space-between; align-items: center; background: var(--header-bg); padding: 12px 15px; border-bottom: 2px solid var(--accent-gold); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 1.3rem; font-weight: bold; color: var(--accent-gold); text-shadow: 0 0 8px rgba(255,215,0,0.4); }
+        .nav-icons { display: flex; gap: 12px; align-items: center; }
+        .nav-icons button, .nav-icons select { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--accent-gold); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+
+        /* Container */
+        .container { max-width: 900px; margin: 15px auto; padding: 0 10px; }
+
+        /* Search & Coin Wallet Bar */
+        .utility-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .utility-bar input { flex: 1; min-width: 150px; padding: 10px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; }
+        .coin-wallet { background: var(--card-bg); border: 1px solid var(--accent-gold); padding: 10px 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+
+        /* Admin Panel & Interactive Boxes */
+        .panel { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--accent-gold); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .panel h2 { color: var(--accent-gold); margin-bottom: 10px; font-size: 1.1rem; }
+        .panel input, .panel textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; }
+        .btn-gold { background: linear-gradient(to right, var(--accent-gold), var(--accent-dark-gold)); color: #000; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 0.95rem; }
+
+        /* News Cards */
+        .news-card { background: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color); }
+        .news-card h3 { color: var(--accent-gold); margin-bottom: 6px; }
+        .news-card .date { font-size: 0.7rem; color: #888; margin-bottom: 8px; }
+        .news-card p { line-height: 1.5; font-size: 0.95rem; }
+        
+        /* Gift & Actions */
+        .card-actions { display: flex; justify-content: space-between; margin-top: 10px; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px; }
+        .gift-btn { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+
+        /* Bottom Tab Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--header-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 2px solid var(--accent-gold); z-index: 1000; }
+        .bottom-nav button { background: none; border: none; color: var(--text-color); font-size: 0.75rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .bottom-nav button span { font-size: 1.1rem; }
+    </style>
+</head>
+<body id="bodyTag">
+
+    <!-- Top Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">🔥 MAX NEWS</div>
+        <div class="nav-icons">
+            <select id="langSelect" onchange="changeLanguage()">
+                <option value="am">አማርኛ</option>
+                <option value="en">English</option>
+                <option value="ar">العربية</option>
+            </select>
+            <button onclick="toggleDarkMode()">🌓</button>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- Coin Wallet & Shop -->
+        <div class="coin-wallet">
+            <div>🪙 የክፍያ ቦርሳ: <span id="userCoins">10</span> ኮይን</div>
+            <button class="gift-btn" onclick="buyCoins()">ኮይን በብር ግዛ (ETB)</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="utility-bar">
+            <input type="text" id="searchInput" placeholder="🔍 ዜና ወይም ሰዎችን ይፈልጉ..." onkeyup="searchNews()">
+        </div>
+
+        <!-- Admin Panel (ለአንተ ብቻ ዜና መጫኛ) -->
+        <div class="panel" id="adminPanel">
+            <h2>🔑 አድሚን ፓነል (ዜና መጫኛ)</h2>
+            <input type="password" id="adminPin" placeholder="የአድሚን ፒን (1234)">
+            <input type="text" id="newsTitle" placeholder="የዜና ርዕስ...">
+            <textarea id="newsContent" rows="3" placeholder="የዜናው ዝርዝር..."></textarea>
+            <button class="btn-gold" onclick="addNews()">ዜናውን ለጥፍ (Publish)</button>
+        </div>
+
+        <!-- Customer Chat / Inbox Support -->
+        <div class="panel">
+            <h2>💬 ከአድሚን ጋር መወያያ (Inbox)</h2>
+            <div id="chatBox" style="height: 100px; overflow-y: auto; background: var(--bg-color); padding: 8px; border-radius: 5px; margin-bottom: 8px; font-size: 0.85rem;">
+                <p style="color:var(--accent-gold);">ማክስ (አድሚን): እንኳን ወደ ማክስ ኒውስ በደህና መጡ!</p>
+            </div>
+            <input type="text" id="chatInput" placeholder="መልእክት ይጻፉ...">
+            <button class="btn-gold" onclick="sendMessage()">መልእክት ላክ</button>
+        </div>
+
+        <!-- News Feed Section -->
+        <div class="news-section">
+            <h2 style="color:var(--accent-gold); margin-bottom: 12px; font-size: 1.2rem;">📰 የቅርብ ጊዜ ዜናዎች</h2>
+            <div id="newsFeed"></div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Menu Navigation -->
+    <div class="bottom-nav">
+        <button onclick="alert('ፕሮፋይል ገጽ')"><span>👤</span>ፕሮፋይል</button>
+        <button onclick="alert('ሞመንት / ፖስት ማድረጊያ')"><span>✨</span>ሞመንት</button>
+        <button onclick="alert('ኢንቦክስ መልዕክቶች')"><span>📬</span>ኢንቦክስ</button>
+        <button onclick="alert('ቅንብሮች (Settings)')"><span>⚙️</span>ሲቲንግ</button>
+    </div>
+
+    <script>
+        const ADMIN_PIN = "1234";
+        let userCoins = 10;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadNews();
+        });
+
+        function loadNews() {
+            const feed = document.getElementById('newsFeed');
+            const saved = JSON.parse(localStorage.getItem('max_news')) || [];
+            if(saved.length === 0) {
+                feed.innerHTML = "<p style='color:#777; text-align:center;'>እስካሁን የተለቀቀ ዜና የለም።</p>";
+                return;
+            }
+            feed.innerHTML = "";
+            saved.forEach((news, index) => {
+                feed.innerHTML += `
+                    <div class="news-card">
+                        <h3>${news.title}</h3>
+                        <div class="date">🗓️ ${news.date}</div>
+                        <p>${news.content}</p>
+                        <div class="card-actions">
+                            <button class="gift-btn" onclick="sendGift(${index})">🎁 ጊፍት ላክ (1 ኮይን)</button>
+                            <button style="background:none; border:none; color:#ff4d4d; cursor:pointer;" onclick="deleteNews(${index})">ሰርዝ</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addNews() {
+            if(document.getElementById('adminPin').value !== ADMIN_PIN) {
+                alert("የተሳሳተ የአድሚን ፒን ቁጥር!");
+                return;
+            }
+            const title = document.getElementById('newsTitle').value;
+            const content = document.getElementById('newsContent').value;
+            if(!title || !content) {
+                alert("እባክዎን ርዕስ እና ይዘት ይሙሉ!");
+                return;
+            }
+            const list = JSON.parse(localStorage.getItem('max_news')) || [];
+            list.unshift({ title, content, date: new Date().toLocaleString() });
+            localStorage.setItem('max_news', JSON.stringify(list));
+            document.getElementById('newsTitle').value = "";
+            document.getElementById('newsContent').value = "";
+            loadNews();
+            alert("ተለጥፏል!");
+        }
+
+        function deleteNews(index) {
+            if(prompt("የአድሚን ፒን ያስገቡ:") === ADMIN_PIN) {
+                let list = JSON.parse(localStorage.getItem('max_news')) || [];
+                list.splice(index, 1);
+                localStorage.setItem('max_news', JSON.stringify(list));
+                loadNews();
+            } else {
+                alert("ስህተት ፒን!");
+            }
+        }
+
+        function buyCoins() {
+            let amount = prompt("რამდን ብር (ETB) መግዛት ይፈልጋሉ? (10 ብር = 10 ኮይን)");
+            if(amount) {
+                userCoins += parseInt(amount) || 10;
+                document.getElementById('userCoins').innerText = userCoins;
+                alert("በንግድ ባንክ/ቴሌብር ክፍያ ተሳክቷል! ኮይን ተጨምሯል።");
+            }
+        }
+
+        function sendGift(index) {
+            if(userCoins > 0) {
+                userCoins--;
+                document.getElementById('userCoins').innerText = userCoins;
+                alert("🎁 ጊፍት ለكاتሪው በተሳካ ሁኔታ ተልኳል! እናመሰግናለን።");
+            } else {
+                alert("የእርስዎ ኮይን አልቋል! እባክዎ ኮይን ይግዙ።");
+            }
+        }
+
+        function toggleDarkMode() {
+            document.getElementById('bodyTag').classList.toggle('light-mode');
+        }
+
+        function searchNews() {
+            let query = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('.news-card');
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? "block" : "none";
+            });
+        }
+
+        function sendMessage() {
+            let text = document.getElementById('chatInput').value;
+            if(text) {
+                let box = document.getElementById('chatBox');
+                box.innerHTML += `<p><b>አንተ:</b> ${text}</p>`;
+                document.getElementById('chatInput').value = "";
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        function changeLanguage() {
+            let lang = document.getElementById('langSelect').value;
+            if(lang === 'en') alert("Language switched to English");
+            else if(lang === 'ar') alert("تم تغيير اللغة إلى العربية");
+            else alert("ቋንቋ ወደ አማርኛ ተቀይሯል");
+        }
+    </script>
+</body>
+</html>
